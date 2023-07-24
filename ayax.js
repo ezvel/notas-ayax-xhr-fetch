@@ -66,10 +66,44 @@
         
     })
     .finally(()=> {
-        console.log("se ejecutará siempre")
+        console.log("se ejecutará siempre");
     })//eliminar el loading
     
 })();
 
 
+(() => {
+    $users = document.getElementById("users-fetch-async-await");
+    $fragment = document.createDocumentFragment();
 
+    async function getData() {
+        try {
+            let res =  await fetch("https://jsonplaceholder.typicode.com/users")
+            let json = await res.json();
+
+            json.forEach(elemento => {
+                const $user = document.createElement("li");
+                $user.innerHTML = `${elemento.name} -- ${elemento.email} -- ${elemento.phone}`;
+                $fragment.appendChild($user);
+            })
+
+            $users.appendChild($fragment);
+
+            if(!res.ok) {
+                throw {status: res.status, statusText: res.statusText}
+            }
+
+        } catch(err) {
+            let mensajeError = err.statusText || "Ocurrió un error";
+            $users.innerHTML = "Error " + err.status + " " + mensajeError;
+            
+        } finally {
+            console.log("se ejecutará siempre")
+        }
+    }
+
+
+    getData();
+
+
+})();
